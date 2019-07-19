@@ -2,7 +2,7 @@
 
 namespace ChangeHistory.Core
 {
-    public class PropertyDifference
+    public class Change
     {
         public Type PropertyType { get; set; }
         public object ValueOld { get; set; }
@@ -10,7 +10,7 @@ namespace ChangeHistory.Core
         public int Tag { get; set; }
 
 
-        public PropertyDifference(Type type, object valueOld, object valueNew, int tag)
+        public Change(Type type, object valueOld, object valueNew, int tag)
         {
             PropertyType = type;
             ValueOld = valueOld;
