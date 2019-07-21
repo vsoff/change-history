@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ChangeHistory.Core
+namespace ChangeHistory.Core.Changes
 {
     public class ChangesSearcher : IChangesSearcher
     {
@@ -27,8 +27,8 @@ namespace ChangeHistory.Core
 
             foreach (var prop in _propertiesByType[type])
             {
-                var oldVal = prop.Func(oldObj);
-                var newVal = prop.Func(newObj);
+                var oldVal = prop.Info.GetValue(oldObj);
+                var newVal = prop.Info.GetValue(newObj);
 
                 if (_propertiesByType.ContainsKey(prop.Type))
                 {
@@ -46,6 +46,8 @@ namespace ChangeHistory.Core
 
             return diffs.ToArray();
         }
+
+        #region Equals 
 
         private bool PrimitiveEquals(Type type, object obj1, object obj2)
         {
@@ -87,5 +89,7 @@ namespace ChangeHistory.Core
 
             return true;
         }
+
+        #endregion
     }
 }

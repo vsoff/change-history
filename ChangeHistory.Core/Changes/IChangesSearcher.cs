@@ -1,4 +1,4 @@
-﻿namespace ChangeHistory.Core
+﻿namespace ChangeHistory.Core.Changes
 {
     public interface IChangesSearcher
     {

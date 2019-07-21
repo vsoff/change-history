@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace ChangeHistory.Core
+namespace ChangeHistory.Core.Changes
 {
     public class ChangeSearchBuilder<TModel>
     {
@@ -15,9 +15,9 @@ namespace ChangeHistory.Core
             _properties = new List<SelectedProperty>();
         }
 
-        public ChangeSearchBuilder<TModel> Select<TProp>(Func<TModel, TProp> func, int tag)
+        public ChangeSearchBuilder<TModel> Select(int tag, string propertyName)
         {
-            _properties.Add(new SelectedProperty(tag, x => func((TModel)x), typeof(TProp)));
+            _properties.Add(new SelectedProperty(typeof(TModel).GetProperty(propertyName), tag));
             return this;
         }
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ChangeHistory.Core
+namespace ChangeHistory.Core.Changes
 {
     public class Change
     {
