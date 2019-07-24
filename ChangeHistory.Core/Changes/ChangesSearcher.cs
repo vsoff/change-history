@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProtoBuf.Meta;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,10 +7,13 @@ namespace ChangeHistory.Core.Changes
 {
     public class ChangesSearcher : IChangesSearcher
     {
+        internal RuntimeTypeModel ProtobufTypeModel { get; set; }
+
         private readonly Dictionary<Type, SelectedProperty[]> _propertiesByType;
 
-        public ChangesSearcher()
+        public ChangesSearcher(RuntimeTypeModel typeModel = null)
         {
+            ProtobufTypeModel = typeModel ?? RuntimeTypeModel.Default;
             _propertiesByType = new Dictionary<Type, SelectedProperty[]>();
         }
 
@@ -18,8 +22,7 @@ namespace ChangeHistory.Core.Changes
 
         public ChangeSearchBuilder<T> SearchBuilder<T>() => new ChangeSearchBuilder<T>(this);
 
-        public Change[] GetChanges<T>(T oldObj, T newObj)
-            => GetChanges(typeof(T), oldObj, newObj);
+        public Change[] GetChanges<T>(T oldObj, T newObj) => GetChanges(typeof(T), oldObj, newObj);
 
         private Change[] GetChanges(Type type, object oldObj, object newObj)
         {

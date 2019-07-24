@@ -13,19 +13,19 @@ using System.Text;
 
 namespace ChangeHistory.Core.ChangesManager
 {
-    public class ChangesManager<TModel> : IChangesManager<TModel> where TModel : class
+    public abstract class ChangesManager<TModel> : IChangesManager<TModel> where TModel : class
     {
         private Dictionary<int, FieldChangeModelPattern<TModel>> _fieldsInfos { get; set; }
 
-        private readonly IChangesSearcher _changesSearcher;
+        private readonly ChangesSearcher _changesSearcher;
 
         public Type ObjectType { get; }
 
-        public Guid DomainObjectType { get; protected set; }
+        public abstract Guid DomainObjectType { get; }
 
-        public ChangesManager(IChangesSearcher changesSearcher)
+        public ChangesManager(ChangesSearcher changesSearcher)
         {
-            _changesSearcher = changesSearcher ?? throw new ArgumentNullException(nameof(IChangesSearcher));
+            _changesSearcher = changesSearcher ?? throw new ArgumentNullException(nameof(ChangesSearcher));
             _fieldsInfos = new Dictionary<int, FieldChangeModelPattern<TModel>>();
             ObjectType = typeof(TModel);
         }
@@ -35,8 +35,8 @@ namespace ChangeHistory.Core.ChangesManager
             return fieldChanges.Select(x =>
             {
                 var fi = _fieldsInfos[x.Field];
-                var oldVal = ProtoSerializerHelper.Deserialize(fi.PropertyInfo.PropertyType, x.OldValue);
-                var newVal = ProtoSerializerHelper.Deserialize(fi.PropertyInfo.PropertyType, x.NewValue);
+                var oldVal = ProtoSerializerHelper.Deserialize(fi.PropertyInfo.PropertyType, x.OldValue, _changesSearcher.ProtobufTypeModel);
+                var newVal = ProtoSerializerHelper.Deserialize(fi.PropertyInfo.PropertyType, x.NewValue, _changesSearcher.ProtobufTypeModel);
 
                 return new FieldChangeModel
                 {
@@ -52,12 +52,12 @@ namespace ChangeHistory.Core.ChangesManager
             return changes.Select(x => new FieldChange
             {
                 Field = x.Tag,
-                NewValue = ProtoSerializerHelper.Serialize(x.ValueNew),
-                OldValue = ProtoSerializerHelper.Serialize(x.ValueOld)
+                NewValue = ProtoSerializerHelper.Serialize(x.ValueNew, _changesSearcher.ProtobufTypeModel),
+                OldValue = ProtoSerializerHelper.Serialize(x.ValueOld, _changesSearcher.ProtobufTypeModel)
             }).ToArray();
         }
 
-        public void Initialize(bool needInitProtobufTypeModel = true)
+        public void Initialize(bool isNeedInitProtobufTypeModel = true)
         {
             // Настраиваем поиск по полям.
             var builder = _changesSearcher.SearchBuilder<TModel>();
@@ -68,9 +68,9 @@ namespace ChangeHistory.Core.ChangesManager
             builder.Build();
 
             // Настраиваем Protobuf (если необходимо).
-            if (needInitProtobufTypeModel)
+            if (isNeedInitProtobufTypeModel)
             {
-                MetaType protoBuilder = RuntimeTypeModel.Default.Add(typeof(TModel), false);
+                MetaType protoBuilder = _changesSearcher.ProtobufTypeModel.Add(typeof(TModel), false);
                 foreach (var field in _fieldsInfos)
                 {
                     protoBuilder.Add(field.Key, field.Value.PropertyInfo.Name);

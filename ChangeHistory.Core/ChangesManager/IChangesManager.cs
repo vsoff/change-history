@@ -10,6 +10,6 @@ namespace ChangeHistory.Core.ChangesManager
         Guid DomainObjectType { get; }
         FieldChangeModel[] GetFormatted(FieldChange[] fieldChanges);
         FieldChange[] ToData(Change[] changes);
-        void Initialize(bool needInitProtobufTypeModel = true);
+        void Initialize(bool isNeedInitProtobufTypeModel = true);
     }
 }

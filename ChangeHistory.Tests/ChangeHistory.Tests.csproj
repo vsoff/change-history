@@ -55,6 +55,12 @@
     <Reference Include="System.ServiceModel" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestClasses\Cat.cs" />
+    <Compile Include="TestClasses\CatManager.cs" />
+    <Compile Include="TestClasses\Dog.cs" />
+    <Compile Include="TestClasses\DogManager.cs" />
+    <Compile Include="TestClasses\PersonManager.cs" />
+    <Compile Include="TestClasses\Person.cs" />
     <Compile Include="SearchTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

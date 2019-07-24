@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ChangeHistory.Core.Changes
 {
-    public class ChangeSearchBuilder<TModel>
+    public class ChangeSearchBuilder<TModel> : IChangeSearchBuilder<TModel>
     {
         private ChangesSearcher _changeController;
         private ICollection<SelectedProperty> _properties { get; }
